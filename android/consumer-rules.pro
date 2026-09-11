@@ -1,0 +1,4 @@
+-keep class org.jivesoftware.smack.** { public *; }
+-keep class org.jivesoftware.smackx.** { public *; }
+-keep class * implements org.jivesoftware.smack.debugger.SmackDebugger { public *; }
+-keep class org.xmlpull.** { *; }
