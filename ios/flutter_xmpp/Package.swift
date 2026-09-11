@@ -14,14 +14,21 @@ let package = Package(
         .package(name: "FlutterFramework", path: "../FlutterFramework")
     ],
     targets: [
+        // Clang-only. Do not set path to the package root — SPM then sees
+        // FlutterXmppPlugin.swift plus these .m files and fails with
+        // "contains mixed language source files".
         .target(
             name: "flutter_xmpp_core",
-            path: ".",
             exclude: [
+                "xmppframework/Vendor/KissXML/DDXML.swift",
                 "xmppframework/Vendor/CocoaLumberjack/Extensions/README.txt",
+                "xmppframework/ORIGIN.md",
+                "xmppframework/README.markdown",
+                "xmppframework/copying.txt",
+                "xmppframework/Vendor/libidn/build-libidn.sh",
             ],
             sources: [
-                "Sources/flutter_xmpp_core",
+                "engine",
                 "xmppframework/Core",
                 "xmppframework/Authentication",
                 "xmppframework/Categories",
@@ -32,8 +39,9 @@ let package = Package(
                 "xmppframework/Vendor/KissXML",
                 "xmppframework/Vendor/CocoaLumberjack",
             ],
-            publicHeadersPath: "Sources/flutter_xmpp_core/include",
+            publicHeadersPath: "include",
             cSettings: [
+                .headerSearchPath("include"),
                 .headerSearchPath("xmppframework"),
                 .headerSearchPath("xmppframework/Core"),
                 .headerSearchPath("xmppframework/Authentication"),
@@ -65,7 +73,6 @@ let package = Package(
                 .headerSearchPath("xmppframework/Vendor/CocoaLumberjack"),
                 .headerSearchPath("xmppframework/Vendor/CocoaLumberjack/Extensions"),
                 .headerSearchPath("xmppframework/Vendor/libidn"),
-                .headerSearchPath("Sources/flutter_xmpp_core/include"),
             ],
             linkerSettings: [
                 .linkedLibrary("xml2"),

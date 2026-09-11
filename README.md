@@ -3,7 +3,7 @@
 Flutter plugin that keeps the XMPP TCP session in native sockets.
 
 - Android: [Smack 4.1](https://github.com/igniterealtime/Smack)
-- iOS: the same XMPPFramework **source tree** Camtalk iOS already uses (`camtalk-ios-v2/CamTalkV2/libs/xmppframework`), vendored at `ios/flutter_xmpp/xmppframework`
+- iOS: the same XMPPFramework **source tree** Camtalk iOS already uses (`camtalk-ios-v2/CamTalkV2/libs/xmppframework`), vendored at `ios/flutter_xmpp/Sources/flutter_xmpp_core/xmppframework`
 
 Dart owns packet JSON, DB, and UI. This package only connects, sends chat bodies, and forwards received bodies.
 

@@ -1,6 +1,6 @@
 name: flutter_xmpp
 description: Native XMPP socket for Flutter. Android uses Smack, iOS compiles the vendored camtalk-ios-v2 XMPPFramework sources.
-version: 1.0.0
+version: 1.0.1
 publish_to: none
 homepage: https://github.com/adamdev718/flutter_xmpp
 
