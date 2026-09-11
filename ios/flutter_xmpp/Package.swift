@@ -17,6 +17,9 @@ let package = Package(
         .target(
             name: "flutter_xmpp_core",
             path: ".",
+            exclude: [
+                "xmppframework/Vendor/CocoaLumberjack/Extensions/README.txt",
+            ],
             sources: [
                 "Sources/flutter_xmpp_core",
                 "xmppframework/Core",
@@ -28,9 +31,6 @@ let package = Package(
                 "xmppframework/Vendor/CocoaAsyncSocket",
                 "xmppframework/Vendor/KissXML",
                 "xmppframework/Vendor/CocoaLumberjack",
-            ],
-            exclude: [
-                "xmppframework/Vendor/CocoaLumberjack/Extensions/README.txt",
             ],
             publicHeadersPath: "Sources/flutter_xmpp_core/include",
             cSettings: [
