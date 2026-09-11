@@ -3,7 +3,7 @@
 Flutter plugin that keeps the XMPP TCP session in native sockets.
 
 - Android: [Smack 4.1](https://github.com/igniterealtime/Smack)
-- iOS: [XMPPFramework](https://github.com/robbiehanson/XMPPFramework) via **Swift Package Manager** (not CocoaPods)
+- iOS: the same XMPPFramework **source tree** Camtalk iOS already uses (`camtalk-ios-v2/CamTalkV2/libs/xmppframework`), vendored at `ios/flutter_xmpp/xmppframework`
 
 Dart owns packet JSON, DB, and UI. This package only connects, sends chat bodies, and forwards received bodies.
 
@@ -36,22 +36,8 @@ await xmpp.send(toJid: '$peer@$host', body: json);
 await xmpp.stop();
 ```
 
-## iOS / SPM
+## iOS
 
-XMPPFramework is declared in `ios/flutter_xmpp/Package.swift` (`branch: master`). The 4.0.0 CocoaPods tag does not ship `Package.swift`, so a version `from: "4.0.0"` pin will not resolve.
+XMPPFramework is **not** fetched from CocoaPods or GitHub SPM. The plugin compiles the copied iOS-v2 sources (Core, auth, Reconnect, AutoPing, CocoaAsyncSocket, KissXML, CocoaLumberjack, `libidn.a`).
 
-The **host app must have Flutter Swift Package Manager enabled**. Flutter 3.44+ turns this on by default. If iOS still compiles this plugin as a CocoaPod only, `import XMPPFramework` fails because the podspec does not pull XMPPFramework.
-
-```sh
-flutter config --enable-swift-package-manager
-```
-
-Or in the app `pubspec.yaml`:
-
-```yaml
-flutter:
-  config:
-    enable-swift-package-manager: true
-```
-
-Other iOS plugins can stay on CocoaPods. Flutter uses SPM for this plugin and CocoaPods for plugins that have no `Package.swift`.
+Host apps still run `pod install` for Flutter's CocoaPods plugins. This plugin's podspec compiles the vendored `.m` files; it does not add `pod 'XMPPFramework'`.

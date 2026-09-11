@@ -10,6 +10,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import org.jivesoftware.smack.ConnectionConfiguration
 import org.jivesoftware.smack.ConnectionListener
+import org.jivesoftware.smack.ReconnectionManager
 import org.jivesoftware.smack.StanzaListener
 import org.jivesoftware.smack.XMPPConnection
 import org.jivesoftware.smack.filter.AndFilter
@@ -76,18 +77,22 @@ class FlutterXmppPlugin :
     }
 
     private fun start(id: String, pwd: String, host: String, port: Int, resource: String) {
-        val current = connection
-        if (current != null && current.isConnected && current.isAuthenticated) {
-            return
-        }
         userId = id
         password = pwd
+        val current = connection
         if (current != null) {
-            try {
-                current.disconnect()
-            } catch (_: Exception) {
+            if (current.isConnected) {
+                return
             }
-            connection = null
+            Thread {
+                try {
+                    current.connect()
+                } catch (e: Exception) {
+                    Log.e(TAG, "connect failed", e)
+                    notify("onClosed", null)
+                }
+            }.start()
+            return
         }
         val config = XMPPTCPConnectionConfiguration.builder()
             .setServiceName(host)
@@ -108,6 +113,7 @@ class FlutterXmppPlugin :
                     Log.e(TAG, "login failed", e)
                 }
                 PingManager.getInstanceFor(xmppConnection).pingInterval = 3 * 60
+                ReconnectionManager.getInstanceFor(conn).enableAutomaticReconnection()
             }
 
             override fun authenticated(connection: XMPPConnection, resumed: Boolean) {
