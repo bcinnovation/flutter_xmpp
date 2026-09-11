@@ -1,3 +1,7 @@
+## 1.0.2
+
+* Provide arm64 `stringprep` stubs so XMPPStringPrep links under Flutter SPM. The old `libidn.a` is i386/armv7-only and SPM does not link raw `.a` files.
+
 ## 1.0.1
 
 * Split iOS SPM into Swift (`flutter_xmpp`) and Clang (`flutter_xmpp_core`) trees. KissXML `DDXML.swift` is excluded so Xcode no longer reports mixed language source files.

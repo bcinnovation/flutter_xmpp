@@ -13,6 +13,7 @@ iOS compiles CamTalkV2/libs/xmppframework (copied into ios/flutter_xmpp/Sources/
   s.source_files = [
     'flutter_xmpp/Sources/flutter_xmpp/**/*.swift',
     'flutter_xmpp/Sources/flutter_xmpp_core/engine/**/*.{h,m}',
+    'flutter_xmpp/Sources/flutter_xmpp_core/libidn_stub/**/*.c',
     'flutter_xmpp/Sources/flutter_xmpp_core/include/**/*.h',
     'flutter_xmpp/Sources/flutter_xmpp_core/xmppframework/Core/**/*.{h,m}',
     'flutter_xmpp/Sources/flutter_xmpp_core/xmppframework/Authentication/**/*.{h,m}',
@@ -29,7 +30,6 @@ iOS compiles CamTalkV2/libs/xmppframework (copied into ios/flutter_xmpp/Sources/
     'flutter_xmpp/Sources/flutter_xmpp_core/xmppframework/XMPPFramework.h',
   ]
   s.public_header_files = 'flutter_xmpp/Sources/flutter_xmpp_core/include/FlutterXmppEngine.h'
-  s.vendored_libraries = 'flutter_xmpp/Sources/flutter_xmpp_core/xmppframework/Vendor/libidn/libidn.a'
   s.libraries = 'xml2', 'resolv'
   s.frameworks = 'CFNetwork', 'Security', 'SystemConfiguration', 'CoreData'
   s.dependency 'Flutter'

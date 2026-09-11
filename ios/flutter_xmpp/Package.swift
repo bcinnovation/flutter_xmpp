@@ -29,6 +29,7 @@ let package = Package(
             ],
             sources: [
                 "engine",
+                "libidn_stub",
                 "xmppframework/Core",
                 "xmppframework/Authentication",
                 "xmppframework/Categories",
