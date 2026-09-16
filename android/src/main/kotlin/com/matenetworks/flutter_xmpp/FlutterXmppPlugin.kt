@@ -11,6 +11,7 @@ import io.flutter.plugin.common.MethodChannel.Result
 import org.jivesoftware.smack.ConnectionConfiguration
 import org.jivesoftware.smack.ConnectionListener
 import org.jivesoftware.smack.ReconnectionManager
+import org.jivesoftware.smack.SmackException
 import org.jivesoftware.smack.StanzaListener
 import org.jivesoftware.smack.XMPPConnection
 import org.jivesoftware.smack.filter.AndFilter
@@ -82,16 +83,12 @@ class FlutterXmppPlugin :
         val current = connection
         if (current != null) {
             if (current.isConnected) {
+                if (current.isAuthenticated) {
+                    notify("onAuthenticated", null)
+                }
                 return
             }
-            Thread {
-                try {
-                    current.connect()
-                } catch (e: Exception) {
-                    Log.e(TAG, "connect failed", e)
-                    notify("onClosed", null)
-                }
-            }.start()
+            connectAndLogin(current)
             return
         }
         val config = XMPPTCPConnectionConfiguration.builder()
@@ -107,11 +104,6 @@ class FlutterXmppPlugin :
         conn.packetReplyTimeout = 60000
         conn.addConnectionListener(object : ConnectionListener {
             override fun connected(xmppConnection: XMPPConnection) {
-                try {
-                    conn.login(userId, password)
-                } catch (e: Exception) {
-                    Log.e(TAG, "login failed", e)
-                }
                 PingManager.getInstanceFor(xmppConnection).pingInterval = 3 * 60
                 ReconnectionManager.getInstanceFor(conn).enableAutomaticReconnection()
             }
@@ -131,6 +123,9 @@ class FlutterXmppPlugin :
             override fun reconnectingIn(seconds: Int) {}
 
             override fun reconnectionSuccessful() {
+                if (conn.isAuthenticated) {
+                    return
+                }
                 try {
                     conn.login(userId, password)
                 } catch (e: Exception) {
@@ -151,9 +146,26 @@ class FlutterXmppPlugin :
             AndFilter(StanzaTypeFilter(Message::class.java)),
         )
         connection = conn
+        connectAndLogin(conn)
+    }
+
+    // connect() logs in on its own once the connection has authenticated before, so
+    // logging in from the ConnectionListener would be a second login and throw.
+    private fun connectAndLogin(conn: XMPPTCPConnection) {
         Thread {
             try {
-                conn.connect()
+                if (!conn.isConnected) {
+                    conn.connect()
+                }
+                if (!conn.isAuthenticated) {
+                    conn.login(userId, password)
+                }
+            } catch (e: SmackException.AlreadyLoggedInException) {
+                notify("onAuthenticated", null)
+            } catch (e: SmackException.AlreadyConnectedException) {
+                if (conn.isAuthenticated) {
+                    notify("onAuthenticated", null)
+                }
             } catch (e: Exception) {
                 Log.e(TAG, "connect failed", e)
                 notify("onClosed", null)

@@ -1,3 +1,8 @@
+## 1.0.3
+
+* Android: log in once per connect. Smack's `connect()` re-runs `login()` by itself when the connection had authenticated before, so the extra login in `ConnectionListener.connected` threw `AlreadyLoggedInException` on every foreground reconnect and reported the still live session to Dart as `onClosed`.
+* Android: `start()` re-emits `onAuthenticated` when the socket is already connected and authenticated, so Dart can resync a stale disconnected state.
+
 ## 1.0.2
 
 * Provide arm64 `stringprep` stubs so XMPPStringPrep links under Flutter SPM. The old `libidn.a` is i386/armv7-only and SPM does not link raw `.a` files.
