@@ -1,3 +1,9 @@
+## 1.0.4
+
+* iOS: stop reporting `onClosed` when `connectWithTimeout:` fails with `XMPPStreamInvalidState`. `XMPPReconnect` leaves the stream in `STATE_XMPP_CONNECTING`, where `isConnected` is still NO, so a `start` during reconnect marked a healthy stream as closed and left the Dart connection flag stale.
+* iOS: `start` re-emits `onAuthenticated` for an already authenticated stream, matching the Android resync.
+* iOS: report authentication failures. `xmppStream:didNotAuthenticate:` was not implemented and the `authenticateWithPassword:` error was discarded, so Dart never learned that login failed.
+
 ## 1.0.3
 
 * Android: log in once per connect. Smack's `connect()` re-runs `login()` by itself when the connection had authenticated before, so the extra login in `ConnectionListener.connected` threw `AlreadyLoggedInException` on every foreground reconnect and reported the still live session to Dart as `onClosed`.

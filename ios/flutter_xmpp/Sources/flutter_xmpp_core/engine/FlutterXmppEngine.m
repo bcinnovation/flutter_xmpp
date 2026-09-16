@@ -9,6 +9,7 @@
 @property (nonatomic, strong, nullable) XMPPAutoPing *autoPing;
 @property (nonatomic, strong, nullable) XMPPReconnect *reconnect;
 @property (nonatomic, copy) NSString *password;
+- (void)connectStream:(XMPPStream *)stream;
 @end
 
 @implementation FlutterXmppEngine
@@ -21,14 +22,12 @@
     self.password = password ?: @"";
     if (self.stream != nil) {
         if (self.stream.isConnected) {
+            if (self.stream.isAuthenticated && self.onAuthenticated != nil) {
+                self.onAuthenticated();
+            }
             return;
         }
-        NSError *error = nil;
-        if (![self.stream connectWithTimeout:15.0 error:&error]) {
-            if (self.onClosed != nil) {
-                self.onClosed();
-            }
-        }
+        [self connectStream:self.stream];
         return;
     }
 
@@ -49,11 +48,22 @@
     self.autoPing = ping;
     self.reconnect = reconnect;
 
+    [self connectStream:stream];
+}
+
+// connectWithTimeout: fails with XMPPStreamInvalidState while XMPPReconnect is
+// already connecting. The stream is fine, so that must not be reported as closed.
+- (void)connectStream:(XMPPStream *)stream {
     NSError *error = nil;
-    if (![stream connectWithTimeout:15.0 error:&error]) {
-        if (self.onClosed != nil) {
-            self.onClosed();
-        }
+    if ([stream connectWithTimeout:15.0 error:&error]) {
+        return;
+    }
+    if ([error.domain isEqualToString:XMPPStreamErrorDomain] &&
+        error.code == XMPPStreamInvalidState) {
+        return;
+    }
+    if (self.onClosed != nil) {
+        self.onClosed();
     }
 }
 
@@ -97,13 +107,23 @@
 
 - (void)xmppStreamDidConnect:(XMPPStream *)sender {
     NSError *error = nil;
-    [sender authenticateWithPassword:self.password error:&error];
+    if (![sender authenticateWithPassword:self.password error:&error]) {
+        if (self.onClosed != nil) {
+            self.onClosed();
+        }
+    }
 }
 
 - (void)xmppStreamDidAuthenticate:(XMPPStream *)sender {
     [self goOnline];
     if (self.onAuthenticated != nil) {
         self.onAuthenticated();
+    }
+}
+
+- (void)xmppStream:(XMPPStream *)sender didNotAuthenticate:(NSXMLElement *)error {
+    if (self.onClosed != nil) {
+        self.onClosed();
     }
 }
 
