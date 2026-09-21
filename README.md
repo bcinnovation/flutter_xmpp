@@ -13,7 +13,7 @@ Dart owns packet JSON, DB, and UI. This package only connects, sends chat bodies
 dependencies:
   flutter_xmpp:
     git:
-      url: https://github.com/adamdev718/flutter_xmpp.git
+      url: https://github.com/bcinnovation/flutter_xmpp.git
       ref: main
 ```
 

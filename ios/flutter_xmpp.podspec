@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
 Android Smack and iOS XMPPFramework socket bridge.
 iOS compiles CamTalkV2/libs/xmppframework (copied into ios/flutter_xmpp/Sources/flutter_xmpp_core/xmppframework).
                        DESC
-  s.homepage         = 'https://github.com/adamdev718/flutter_xmpp'
+  s.homepage         = 'https://github.com/bcinnovation/flutter_xmpp'
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Mate Networks' => 'dev@matenetworks.com' }
   s.source           = { :path => '.' }
