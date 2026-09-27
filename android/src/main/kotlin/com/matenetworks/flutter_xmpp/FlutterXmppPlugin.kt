@@ -104,7 +104,7 @@ class FlutterXmppPlugin :
         conn.packetReplyTimeout = 60000
         conn.addConnectionListener(object : ConnectionListener {
             override fun connected(xmppConnection: XMPPConnection) {
-                PingManager.getInstanceFor(xmppConnection).pingInterval = 3 * 60
+                PingManager.getInstanceFor(xmppConnection).pingInterval = 60
                 ReconnectionManager.getInstanceFor(conn).enableAutomaticReconnection()
             }
 

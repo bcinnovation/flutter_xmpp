@@ -1,3 +1,7 @@
+## 1.0.5
+
+* Android: send an XMPP ping every 60 seconds, matching iOS. A 3 minute interval left mobile NAT idle timeouts to drop the socket before the next ping.
+
 ## 1.0.4
 
 * iOS: stop reporting `onClosed` when `connectWithTimeout:` fails with `XMPPStreamInvalidState`. `XMPPReconnect` leaves the stream in `STATE_XMPP_CONNECTING`, where `isConnected` is still NO, so a `start` during reconnect marked a healthy stream as closed and left the Dart connection flag stale.
